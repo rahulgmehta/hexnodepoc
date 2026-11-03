@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hexnode UEM & IDP - Pre-POC Requirements & SOW Form</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SheetJS (xlsx) for multi-tab Excel export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- FontAwesome for enterprise icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+              accent: '#3b82f6',
+              highlight: '#06b6d4'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header Navigation -->
+  <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 font-bold text-lg">
+          H
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">Hexnode UEM & IDP</span>
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-950 text-cyan-400 border border-cyan-800/60 hidden sm:inline-block">POC & SOW Architect</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 text-xs sm:text-sm">
+        <button onclick="fillSampleData()" type="button" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
+          <span class="hidden sm:inline">Load Sample POC</span>
+        </button>
+        <button onclick="resetForm()" type="button" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-rose-950/40 text-slate-400 hover:text-rose-300 transition">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Stepper Navigation -->
+    <div class="mb-8">
+      <div class="relative">
+        <div class="overflow-hidden h-1.5 mb-4 text-xs flex rounded bg-slate-200">
+          <div id="progressBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-300 w-1/6"></div>
+        </div>
+        <div class="grid grid-cols-6 gap-2 text-center text-xs font-medium">
+          <button onclick="goToStep(1)" id="stepTab-1" class="step-btn py-2 px-1 rounded-lg border transition text-blue-600 border-blue-500 bg-blue-50/70 font-semibold flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs mb-1">1</span>
+            <span class="truncate w-full hidden md:inline">Organization</span>
+          </button>
+          <button onclick="goToStep(2)" id="stepTab-2" class="step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1">2</span>
+            <span class="truncate w-full hidden md:inline">Prerequisites</span>
+          </button>
+          <button onclick="goToStep(3)" id="stepTab-3" class="step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1">3</span>
+            <span class="truncate w-full hidden md:inline">Device Matrix</span>
+          </button>
+          <button onclick="goToStep(4)" id="stepTab-4" class="step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1">4</span>
+            <span class="truncate w-full hidden md:inline">Endpoint Scope</span>
+          </button>
+          <button onclick="goToStep(5)" id="stepTab-5" class="step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1">5</span>
+            <span class="truncate w-full hidden md:inline">Hexnode IDP</span>
+          </button>
+          <button onclick="goToStep(6)" id="stepTab-6" class="step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center">
+            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1">6</span>
+            <span class="truncate w-full hidden md:inline">Review & Export</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Form View Wrapper -->
+    <form id="pocForm" onsubmit="event.preventDefault();" class="space-y-6">
+
+      <!-- ================= STEP 1: ORGANIZATION & POC INFO ================= -->
+      <section id="step-1" class="form-step bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="border-b border-slate-100 pb-4 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-regular fa-building text-blue-600"></i>
+            Organization & POC Engagement Details
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">Capture core organizational entities, primary stakeholders, timeline, and defined acceptance goals.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Client Organization Name *</label>
+            <input type="text" id="orgName" required placeholder="Acme Global Corporation" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Hexnode Account / Portal Domain *</label>
+            <div class="flex items-center">
+              <input type="text" id="portalSubdomain" placeholder="acmecorp" class="w-full px-4 py-2.5 rounded-l-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
+              <select id="portalDomainSuffix" class="px-3 py-2.5 bg-slate-100 text-slate-700 border border-l-0 border-slate-300 rounded-r-xl text-xs font-mono font-medium outline-none cursor-pointer hover:bg-slate-200 transition">
+                <option value=".uem.hexnode.com">.uem.hexnode.com</option>
+                <option value=".hexnode.com">.hexnode.com</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Customer SPOC -->
+          <div class="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-user-tie text-blue-500"></i> Customer Lead Technical SPOC
+            </h3>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Full Name</label>
+              <input type="text" id="customerSpocName" placeholder="David Miller" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Work Email</label>
+                <input type="email" id="customerSpocEmail" placeholder="dmiller@acme.com" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Contact Phone</label>
+                <input type="tel" id="customerSpocPhone" placeholder="+1 (555) 019-2834" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Hexnode / Partner SPOC -->
+          <div class="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-cyan-600"></i> Hexnode Consultant / Certified Partner
+            </h3>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Partner Name</label>
+              <input type="text" id="partnerCompany" placeholder="e.g. Acuative / Wipro / Redington" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Engineer Name</label>
+                <input type="text" id="partnerEngineerName" placeholder="Sarah Jenkins" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-500 mb-1">Partner SE Email</label>
+                <input type="email" id="partnerSeEmail" placeholder="sjenkins@partner.com" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Dates -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Target POC Start Date</label>
+            <input type="date" id="pocStartDate" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Target POC Completion Date</label>
+            <input type="date" id="pocEndDate" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">POC Success Criteria & Primary Business Drivers</label>
+          <textarea id="pocSuccessCriteria" rows="3" placeholder="e.g., Validate remote BitLocker & FileVault recovery, deploy Managed Google Play apps to 20 retail tablets in single-app kiosk mode, enforce macOS Hexnode Access cloud login via Entra ID." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm"></textarea>
+        </div>
+      </section>
+
+      <!-- ================= STEP 2: PREREQUISITES & DIRECTORY ================= -->
+      <section id="step-2" class="form-step hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="border-b border-slate-100 pb-4 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-network-wired text-blue-600"></i>
+            Infrastructure, Identity & Enrollment Readiness
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">Verify enrollment infrastructure, cloud/directory integrations, and network firewall configurations.</p>
+        </div>
+
+        <!-- Technical Prerequisite Reference Banner -->
+        <div class="mb-6 bg-slate-900 text-slate-200 rounded-xl p-4 text-xs space-y-2 border border-slate-800">
+          <div class="flex items-center justify-between font-semibold text-cyan-400">
+            <span><i class="fa-solid fa-circle-info mr-1.5"></i> Network & Firewall Ports Reference:</span>
+            <span class="text-[11px] text-slate-400">Outbound HTTPS / TLS 1.2+</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] pt-1">
+            <div class="p-2 rounded bg-slate-800/80 border border-slate-700">
+              <span class="font-bold text-white block">Hexnode Cloud</span>
+              `*.hexnode.com` (Port 443 TCP & WSS)
+            </div>
+            <div class="p-2 rounded bg-slate-800/80 border border-slate-700">
+              <span class="font-bold text-white block">Apple APNs & ABM</span>
+              Port 5223 & 443 to `17.0.0.0/8`
+            </div>
+            <div class="p-2 rounded bg-slate-800/80 border border-slate-700">
+              <span class="font-bold text-white block">Android Enterprise</span>
+              `*.google.com`, `play.google.com` (Port 443)
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Apple Business Manager -->
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-brands fa-apple text-slate-800 text-base"></i> Apple Business Manager (ABM)
+              </span>
+              <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">iOS / macOS</span>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Status of ABM Account</label>
+              <select id="abmStatus" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                <option value="Configured and Ready">Configured and Ready</option>
+                <option value="In Progress / Awaiting D-U-N-S">In Progress / Awaiting D-U-N-S</option>
+                <option value="Not Applicable (BYOD or Manual only)">Not Applicable (Manual or BYOD only)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Apple APNs Certificate Readiness</label>
+              <select id="apnsStatus" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                <option value="Dedicated Corporate Apple ID ready">Dedicated Corporate Apple ID ready</option>
+                <option value="Requires Creation">Requires Creation during Kickoff</option>
+                <option value="Already bound in trial">Already bound in trial</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Android Enterprise -->
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-brands fa-android text-emerald-600 text-base"></i> Android Enterprise & Knox
+              </span>
+              <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Android</span>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Android Enterprise Binding Mode</label>
+              <select id="androidBinding" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                <option value="Managed Google Play (Standard Account)">Managed Google Play (Gmail / Dedicated Account)</option>
+                <option value="Google Workspace Domain Bound">Google Workspace Domain Bound</option>
+                <option value="Not in Scope">Not in Scope</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Automated Provisioning Portals</label>
+              <div class="space-y-1.5 pt-1 text-xs text-slate-700">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="zeroTouchCheck" class="rounded text-blue-600 focus:ring-blue-500">
+                  <span>Android Zero-Touch Portal Access</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="knoxCheck" class="rounded text-blue-600 focus:ring-blue-500">
+                  <span>Samsung Knox Mobile Enrollment (KME)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Windows Autopilot & Entra -->
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-brands fa-windows text-blue-600 text-base"></i> Windows Autopilot & Entra
+              </span>
+              <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-700">Windows</span>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-500 mb-1">Windows Autopilot / Automatic Enrollment</label>
+              <select id="windowsAutopilot" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                <option value="Microsoft Entra ID Automatic MDM (P1/P2)">Entra ID Premium Automatic MDM</option>
+                <option value="Hexnode Windows Installer (.exe / .msi)">Hexnode Windows Agent Installer</option>
+                <option value="Windows Provisioning Packages (.ppkg)">Windows Provisioning Packages (.ppkg)</option>
+                <option value="N/A">Not in Scope</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Existing Identity Providers -->
+          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-users-gear text-indigo-600 text-base"></i> Primary Directory / IdP
+              </span>
+              <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700">Identity</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 pt-1">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="idpEntra" checked class="rounded text-blue-600">
+                <span>Microsoft Entra ID</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="idpGoogle" class="rounded text-blue-600">
+                <span>Google Workspace</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="idpOkta" class="rounded text-blue-600">
+                <span>Okta</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="idpAD" class="rounded text-blue-600">
+                <span>On-Premises Active Directory</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="idpHexnodeNative" checked class="rounded text-blue-600">
+                <span>Hexnode Cloud Directory</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 3: TEST DEVICE INVENTORY ================= -->
+      <section id="step-3" class="form-step hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-3">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-mobile-screen-button text-blue-600"></i>
+              Test Device Inventory Matrix
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">Define hardware platforms, ownership modes, and hardware identifiers for POC testing.</p>
+          </div>
+          <button type="button" onclick="addDeviceRow()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs flex items-center gap-1.5 transition shadow-sm w-fit">
+            <i class="fa-solid fa-plus"></i> Add Test Device
+          </button>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scroll">
+          <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead class="bg-slate-50 font-semibold text-slate-700">
+              <tr>
+                <th class="px-3 py-3 text-left">Platform</th>
+                <th class="px-3 py-3 text-left">Ownership</th>
+                <th class="px-3 py-3 text-left">Make & Model</th>
+                <th class="px-3 py-3 text-left">OS Version</th>
+                <th class="px-3 py-3 text-left">Serial / IMEI (Optional)</th>
+                <th class="px-2 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="deviceTableBody" class="divide-y divide-slate-200 bg-white">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+          <i class="fa-solid fa-circle-question"></i> Recommended: 2-3 devices per targeted operating system for diverse policy validation.
+        </p>
+      </section>
+
+      <!-- ================= STEP 4: ENDPOINT POLICY SCOPE ================= -->
+      <section id="step-4" class="form-step hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="border-b border-slate-100 pb-4 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-blue-600"></i>
+            Endpoint Management Policy & Application Scope
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">Select key configuration profiles, containerization policies, and apps for test deployment.</p>
+        </div>
+
+        <!-- Android & iOS Mobile Scope -->
+        <div class="mb-8">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-mobile-screen text-cyan-600"></i> Mobile Devices (Android & iOS / iPadOS)
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs mb-4">
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeKiosk" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Kiosk Lockdown</span>
+                <span class="text-slate-500 text-[11px]">Single/Multi-app kiosk</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopePasscode" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Passcode & Biometrics</span>
+                <span class="text-slate-500 text-[11px]">PIN, complexity & wipe limits</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeWifiVpn" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Wi-Fi & Per-App VPN</span>
+                <span class="text-slate-500 text-[11px]">802.1x Enterprise & VPN push</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeRestrictions" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Hardware Restrictions</span>
+                <span class="text-slate-500 text-[11px]">Camera, USB, Bluetooth, Factory Reset</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeRemoteWipe" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Remote Lock / Wipe</span>
+                <span class="text-slate-500 text-[11px]">Enterprise & Full remote wipe</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeAppBlock" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">App Blacklist / Whitelist</span>
+                <span class="text-slate-500 text-[11px]">Prevent unauthorized apps</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeVPP" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Apple VPP Silent Push</span>
+                <span class="text-slate-500 text-[11px]">No personal Apple IDs required</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeRemoteView" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Remote View / Control</span>
+                <span class="text-slate-500 text-[11px]">Real-time tech support sessions</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Windows & macOS Desktop Scope -->
+        <div class="mb-8">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-laptop text-blue-600"></i> Desktops & Laptops (Windows & macOS)
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs mb-4">
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeEncryption" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">BitLocker / FileVault</span>
+                <span class="text-slate-500 text-[11px]">Key escrow to Hexnode vault</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopePatching" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">OS Patch Management</span>
+                <span class="text-slate-500 text-[11px]">Update rings & deferrals</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeScripts" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Custom Scripting</span>
+                <span class="text-slate-500 text-[11px]">PowerShell & Bash remediation</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="scopeAppDeploy" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Package Deployment</span>
+                <span class="text-slate-500 text-[11px]">Silent .msi, .exe, .pkg, .dmg</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- BYOD & Work Profile Scope -->
+        <div class="mb-6">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-briefcase text-purple-600"></i> BYOD & Work Profile Containerization
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="byodAndroid" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Android Work Profile</span>
+                <span class="text-slate-500 text-[11px]">Isolated enterprise container</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="byodApple" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Apple User Enrollment</span>
+                <span class="text-slate-500 text-[11px]">Managed Apple ID volume separation</span>
+              </div>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-slate-50/50 flex items-start gap-2.5 cursor-pointer">
+              <input type="checkbox" id="byodDlp" checked class="mt-0.5 rounded text-blue-600">
+              <div>
+                <span class="font-semibold text-slate-800 block">Data Loss Prevention (DLP)</span>
+                <span class="text-slate-500 text-[11px]">Block cross-profile clipboard/sharing</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Top 10 Priority Test Policies for Qualification -->
+        <div class="pt-6 mb-8 border-t border-slate-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-list-check text-indigo-600"></i> Top 10 Priority Test Policies for Qualification
+                </h3>
+                <span id="priorityPolicyCounter" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">0 / 10 Selected</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Specify up to 10 crucial security & management policies to test and validate for POC qualification sign-off.</p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button type="button" onclick="loadStandardTop10Policies()" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold flex items-center gap-1.5 transition border border-indigo-200">
+                <i class="fa-solid fa-wand-magic text-indigo-500"></i> Auto-fill Standard Top 10
+              </button>
+              <button type="button" onclick="addPriorityPolicyRow()" id="addPolicyBtn" class="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+                <i class="fa-solid fa-plus"></i> Add Policy
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scroll">
+            <table class="min-w-full divide-y divide-slate-200 text-xs">
+              <thead class="bg-slate-50 font-semibold text-slate-700">
+                <tr>
+                  <th class="px-2 py-2.5 text-center w-10">#</th>
+                  <th class="px-3 py-2.5 text-left w-36">Target Platform</th>
+                  <th class="px-3 py-2.5 text-left min-w-[200px]">Policy / Feature Description</th>
+                  <th class="px-3 py-2.5 text-left min-w-[220px]">Qualification Criteria / Expected Result</th>
+                  <th class="px-3 py-2.5 text-left w-32">Priority</th>
+                  <th class="px-3 py-2.5 text-left min-w-[150px]">Remarks / Test Notes</th>
+                  <th class="px-2 py-2.5 text-center w-12">Action</th>
+                </tr>
+              </thead>
+              <tbody id="priorityPolicyTableBody" class="divide-y divide-slate-200 bg-white">
+                <!-- Dynamically populated top 10 policy rows -->
+              </tbody>
+            </table>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+            <i class="fa-solid fa-circle-info text-blue-500"></i> These policies form the core qualification checklist and will be exported to a dedicated sheet in your SOW Excel workbook.
+          </p>
+        </div>
+
+        <!-- Target In-Scope Application Deployments -->
+        <div class="pt-4 border-t border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">Priority Test Applications</h4>
+              <p class="text-[11px] text-slate-500">List specific production applications to be deployed and verified during testing.</p>
+            </div>
+            <button type="button" onclick="addAppRow()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium flex items-center gap-1 transition">
+              <i class="fa-solid fa-plus text-blue-600"></i> Add App
+            </button>
+          </div>
+          <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scroll">
+            <table class="min-w-full divide-y divide-slate-200 text-xs">
+              <thead class="bg-slate-50 text-slate-700">
+                <tr>
+                  <th class="px-3 py-2 text-left">App Name</th>
+                  <th class="px-3 py-2 text-left">Target Platform</th>
+                  <th class="px-3 py-2 text-left">Source / Format (Store vs Enterprise In-House)</th>
+                  <th class="px-2 py-2 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="appTableBody" class="divide-y divide-slate-200 bg-white">
+                <!-- App Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 5: HEXNODE IDP SOW ================= -->
+      <section id="step-5" class="form-step hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="border-b border-slate-100 pb-4 mb-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-id-badge text-cyan-600"></i>
+                Hexnode IDP (Identity & Access) Scope of Work
+              </h2>
+              <p class="text-sm text-slate-500 mt-1">Specify directory federation source, target applications for SSO, MFA requirements, and customer IDP requirements.</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800 border border-cyan-200 hidden sm:inline-block">Identity & Access SOW</span>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Hexnode IDP Portal Domain -->
+          <div class="p-5 rounded-xl border border-cyan-200 bg-cyan-50/50 space-y-2">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700">Hexnode IDP Portal Domain *</label>
+            <div class="flex items-center max-w-md">
+              <input type="text" id="idpSubdomain" placeholder="acmecorp" class="w-full px-4 py-2.5 rounded-l-xl border border-slate-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition text-sm bg-white">
+              <span class="px-3.5 py-2.5 bg-slate-100 text-slate-700 border border-l-0 border-slate-300 rounded-r-xl text-xs font-mono font-medium select-none whitespace-nowrap">.identity.hexnode.com</span>
+            </div>
+            <p class="text-[11px] text-slate-500">Instance URL dedicated to authentication, cloud directory, and IDP services.</p>
+          </div>
+
+          <!-- 1. Directory Federation & User Synchronization -->
+          <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white transition space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+              <span class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-arrows-split-up-and-left text-blue-600"></i> 1. Directory Federation & User Synchronization
+              </span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-blue-100 text-blue-700">Required</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-2">Target Directory / Identity Provider *</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:border-blue-500 cursor-pointer transition">
+                  <input type="radio" name="idpFederationTarget" value="Microsoft Entra ID" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                  <div class="flex items-center gap-2.5">
+                    <i class="fa-brands fa-microsoft text-blue-600 text-lg"></i>
+                    <div>
+                      <span class="font-bold text-xs text-slate-800 block">Microsoft Entra ID</span>
+                      <span class="text-[11px] text-slate-500">Azure Active Directory (Cloud)</span>
+                    </div>
+                  </div>
+                </label>
+                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:border-blue-500 cursor-pointer transition">
+                  <input type="radio" name="idpFederationTarget" value="Google Workspace" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                  <div class="flex items-center gap-2.5">
+                    <i class="fa-brands fa-google text-red-500 text-lg"></i>
+                    <div>
+                      <span class="font-bold text-xs text-slate-800 block">Google Workspace</span>
+                      <span class="text-[11px] text-slate-500">Google Cloud Identity & Users</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Single Sign-On (SSO) Application Integration -->
+          <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white transition space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-3 gap-2">
+              <div>
+                <span class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                  <i class="fa-solid fa-key text-indigo-600"></i> 2. Single Sign-On (SSO) Application Integration
+                </span>
+                <p class="text-xs text-slate-500 mt-0.5">Please name the specific application(s) you are looking for SSO integration with:</p>
+              </div>
+              <button type="button" onclick="addSsoAppRow()" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold flex items-center gap-1 transition w-fit">
+                <i class="fa-solid fa-plus"></i> Add SSO App
+              </button>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scroll">
+              <table class="min-w-full divide-y divide-slate-200 text-xs">
+                <thead class="bg-slate-50 font-semibold text-slate-700">
+                  <tr>
+                    <th class="px-3 py-2 text-left min-w-[200px]">Application Name *</th>
+                    <th class="px-3 py-2 text-left w-40">Protocol / Type</th>
+                    <th class="px-3 py-2 text-left min-w-[200px]">Remarks / Integration Use Case</th>
+                    <th class="px-2 py-2 text-center w-12">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ssoAppTableBody" class="divide-y divide-slate-200 bg-white">
+                  <!-- Dynamically populated SSO app rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Hexnode Access: macOS & Windows Cloud Login Window Authentication -->
+            <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/60 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="h-7 w-7 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-desktop"></i>
+                  </div>
+                  <div>
+                    <span class="font-bold text-blue-950 text-xs sm:text-sm">Hexnode Access: macOS & Windows Cloud Login Window Authentication</span>
+                    <p class="text-[11px] text-slate-600">Replaces native login windows with Hexnode Access to enable cloud directory authentication (Microsoft Entra ID / Google Workspace).</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 hidden sm:inline-block">Desktop Login Gating</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                <!-- macOS Hexnode Access -->
+                <label class="p-3 rounded-xl border border-blue-200 bg-white hover:border-blue-400 cursor-pointer transition flex items-start gap-2.5">
+                  <input type="checkbox" id="idpScopeMacAccess" checked class="mt-0.5 rounded text-blue-600 h-4 w-4">
+                  <div class="space-y-1">
+                    <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                      <i class="fa-brands fa-apple text-slate-800 text-sm"></i> macOS Hexnode Access
+                    </span>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                      Custom login window, dynamic local Mac account creation/pairing with IdP credentials, FileVault passkey synchronization, and menu bar identity app.
+                    </p>
+                  </div>
+                </label>
+
+                <!-- Windows Hexnode Access -->
+                <label class="p-3 rounded-xl border border-blue-200 bg-white hover:border-blue-400 cursor-pointer transition flex items-start gap-2.5">
+                  <input type="checkbox" id="idpScopeWindowsAccess" checked class="mt-0.5 rounded text-blue-600 h-4 w-4">
+                  <div class="space-y-1">
+                    <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                      <i class="fa-brands fa-windows text-blue-600 text-sm"></i> Windows Hexnode Access
+                    </span>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                      Windows Custom Credential Provider, cloud directory authentication on Windows 10/11 lock screen, auto local profile provisioning, and cached offline login support.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Multi-Factor Authentication (MFA) Policy Scope -->
+          <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white transition space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+              <span class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-shield-virus text-emerald-600"></i> 3. Multi-Factor Authentication (MFA) Policy Scope
+              </span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Required</span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-2">Are you looking to enforce Multi-Factor Authentication (MFA) policy during the evaluation?</label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-emerald-500 cursor-pointer transition text-xs font-semibold text-slate-800">
+                  <input type="radio" name="mfaOption" value="YES" checked class="h-4 w-4 text-emerald-600 focus:ring-emerald-500">
+                  <span>YES</span>
+                </label>
+                <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-400 cursor-pointer transition text-xs font-semibold text-slate-800">
+                  <input type="radio" name="mfaOption" value="No" class="h-4 w-4 text-slate-600 focus:ring-slate-500">
+                  <span>No</span>
+                </label>
+                <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-amber-500 cursor-pointer transition text-xs font-semibold text-slate-800">
+                  <input type="radio" name="mfaOption" value="Might be" class="h-4 w-4 text-amber-600 focus:ring-amber-500">
+                  <span>Might be</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">MFA Requirements / Scope Notes (Optional)</label>
+              <input type="text" id="mfaNotes" placeholder="e.g. Enforce TOTP Authenticator app on admin logins and unmanaged device enrollments" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+            </div>
+          </div>
+
+          <!-- 4. Customer IDP Requirements / Notes -->
+          <div class="p-5 rounded-xl border border-cyan-200 bg-cyan-50/40 space-y-3">
+            <div class="border-b border-cyan-200 pb-2.5">
+              <span class="font-bold text-cyan-950 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-list text-cyan-600"></i> 4. Customer IDP Requirements / Notes
+              </span>
+              <p class="text-xs text-slate-600 mt-0.5">Please provide any custom success metrics, directory constraints, or specific security expectations for qualifying Hexnode IDP:</p>
+            </div>
+            <div>
+              <textarea id="idpCustomNotes" rows="4" placeholder="e.g. 1. Directory sync latency must reflect within 5 minutes of changes in Entra ID.
+2. Validate local Mac user creation and FileVault password synchronization via macOS Hexnode Access.
+3. Test automated conditional access rule blocking access from unencrypted endpoints." class="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-cyan-500 outline-none transition"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 6: REVIEW & EXPORT ================= -->
+      <section id="step-6" class="form-step hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+        <div class="border-b border-slate-100 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-file-excel text-emerald-600"></i>
+              Scope of Work Review & Multi-Tab Excel Export
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">Review compiled SOW matrix and generate the official multi-tab Excel workbook.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="exportToExcel()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition">
+              <i class="fa-solid fa-file-arrow-down text-sm"></i> Export to Excel (.xlsx)
+            </button>
+            <button type="button" onclick="exportToJSON()" class="px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-code"></i> JSON
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Preview Box -->
+        <div class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-xs text-slate-500 uppercase font-semibold block">Organization</span>
+              <span id="prevOrgName" class="text-base font-bold text-slate-800">-</span>
+              <span id="prevPortal" class="text-xs text-blue-600 font-mono block mt-0.5">-</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-xs text-slate-500 uppercase font-semibold block">Primary Stakeholders</span>
+              <span id="prevCustomerSpoc" class="text-xs font-semibold text-slate-800 block">-</span>
+              <span id="prevPartnerSpoc" class="text-xs text-slate-600 block">-</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-xs text-slate-500 uppercase font-semibold block">Timeline & Devices</span>
+              <span id="prevDates" class="text-xs font-semibold text-slate-800 block">-</span>
+              <span id="prevDeviceCount" class="text-xs text-slate-600 block font-medium mt-0.5">-</span>
+            </div>
+          </div>
+
+          <!-- Multi-Tab Excel Structure Outline Notice -->
+          <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900 space-y-2">
+            <span class="font-bold flex items-center gap-1.5 text-blue-950">
+              <i class="fa-solid fa-table-cells text-blue-600"></i> Excel Export Tabs Generated:
+            </span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 pt-1 font-mono text-[11px]">
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">1. POC_Summary</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">2. Prerequisites</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">3. Enrollment_Setup</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">4. Device_Inventory</span>
+              <span class="px-2 py-1 bg-indigo-100 text-indigo-900 font-bold rounded border border-indigo-300 truncate">5. Top10_Policies</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">6. Android_iOS_Scope</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">7. Windows_macOS_Scope</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">8. BYOD_Scope</span>
+              <span class="px-2 py-1 bg-white rounded border border-blue-200 truncate">9. Hexnode_IDP_SOW</span>
+            </div>
+          </div>
+
+          <!-- Collapsible Preview Details -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <div class="bg-slate-100 px-4 py-2.5 font-semibold text-xs text-slate-700 flex justify-between items-center">
+              <span>Selected Scope & Policies Overview</span>
+              <span class="text-[11px] text-slate-500 font-normal">Auto-formatted for Excel sheets</span>
+            </div>
+            <div class="p-4 text-xs space-y-3 bg-white" id="scopeReviewText">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navigation Control Bar -->
+      <div class="flex items-center justify-between pt-4">
+        <button type="button" id="prevBtn" onclick="prevStep()" class="hidden px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left"></i> Previous
+        </button>
+        <div class="ml-auto flex items-center gap-3">
+          <button type="button" id="nextBtn" onclick="nextStep()" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 transition shadow-md shadow-blue-500/20">
+            <span>Continue</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center space-x-3 text-xs">
+      <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+      <span id="toastMsg" class="font-medium">Notification message</span>
+    </div>
+  </div>
+
+  <footer class="mt-auto py-6 text-center text-xs text-slate-400 border-t border-slate-200">
+    Hexnode UEM & IDP Enterprise Evaluation Suite &copy; 2026. Standard POC Scoping Framework.
+  </footer>
+
+  <!-- Core Interactive Script -->
+  <script>
+    let currentStep = 1;
+    const totalSteps = 6;
+
+    // Initial Test Device Rows
+    let deviceRows = [
+      { platform: 'Android', ownership: 'Corporate', model: 'Samsung Galaxy Tab S9', os: 'Android 14', serial: 'R52M10XYZ' },
+      { platform: 'iOS', ownership: 'Corporate', model: 'Apple iPad 10th Gen', os: 'iPadOS 17.4', serial: 'F9XYZ987' },
+      { platform: 'macOS', ownership: 'Corporate', model: 'Apple MacBook Pro M3', os: 'macOS Sonoma 14', serial: 'C02D1234' },
+      { platform: 'Windows', ownership: 'Corporate', model: 'Dell Latitude 5440', os: 'Windows 11 Pro', serial: '8BG1234' },
+      { platform: 'Linux', ownership: 'Corporate', model: 'Lenovo ThinkPad T14', os: 'Ubuntu 24.04 LTS', serial: 'LNX99482' },
+      { platform: 'Google ChromeBook', ownership: 'Corporate', model: 'HP Chromebook x360', os: 'ChromeOS 124', serial: 'CB77120' },
+      { platform: 'Android', ownership: 'BYOD', model: 'Google Pixel 8', os: 'Android 14', serial: 'N/A' }
+    ];
+
+    // Priority Test Policies (Top 10)
+    let priorityPolicies = [
+      { platform: 'Windows / macOS', policy: 'Disk Encryption & Recovery Key Escrow', criteria: 'BitLocker & FileVault enforced silently; keys backed up in Hexnode vault', priority: 'Critical', remarks: 'Compliance requirement' },
+      { platform: 'Android / iOS', policy: 'Single/Multi-App Kiosk Lockdown', criteria: 'Device boots into locked enterprise app with status bar & settings blocked', priority: 'Critical', remarks: 'Store and warehouse floor units' },
+      { platform: 'Cross-platform', policy: 'Corporate Wi-Fi & VPN Profile Push', criteria: 'WPA2/WPA3 enterprise Wi-Fi and Per-App VPN silently provisioned', priority: 'High', remarks: 'Zero manual credential entry by end-users' },
+      { platform: 'macOS', policy: 'Hexnode Access Cloud Login Window', criteria: 'Authenticate at Mac login screen via Entra ID; auto-create local account', priority: 'Critical', remarks: 'Replaces local admin onboarding' },
+      { platform: 'Windows', policy: 'Silent Enterprise Application Deployment', criteria: 'Remote push of .msi / .exe packages with silent command-line flags', priority: 'High', remarks: 'Validate install without reboot' },
+      { platform: 'Android (BYOD)', policy: 'Work Profile & DLP Containerization', criteria: 'Prevent copy/paste between corporate apps and personal WhatsApp/Storage', priority: 'High', remarks: 'Personal device privacy compliance' },
+      { platform: 'Cross-platform', policy: 'Remote Lock & Selective Enterprise Wipe', criteria: 'Device locks instantly; selective wipe removes work data without touching personal photos', priority: 'Critical', remarks: 'Lost/stolen device workflow' },
+      { platform: 'Windows / macOS', policy: 'Automated OS Patching & Deferrals', criteria: 'Quality & feature updates scheduled during maintenance hours only', priority: 'Medium', remarks: 'Prevent mid-day disruptions' },
+      { platform: 'Android / iOS', policy: 'Peripheral & Hardware Restrictions', criteria: 'Disable Camera, USB storage, Developer Options, and Factory Reset', priority: 'Medium', remarks: 'Retail tablet security baseline' },
+      { platform: 'Cross-platform', policy: 'Posture-Based Device Trust SSO', criteria: 'Access to SaaS apps blocked if device encryption or antivirus is disabled', priority: 'High', remarks: 'Zero-trust conditional access' }
+    ];
+
+    // Initial App Rows (Step 4)
+    let appRows = [
+      { name: 'Microsoft 365 / Outlook', platform: 'Android & iOS', source: 'Public Store (VPP / Managed Google Play)' },
+      { name: 'Acme Logistics Scanner', platform: 'Android', source: 'Enterprise In-House (.APK Upload)' },
+      { name: 'Slack Workplace', platform: 'macOS & Windows', source: 'Enterprise Installer (.pkg / .msi)' },
+      { name: 'Zscaler Client Connector', platform: 'Windows & macOS', source: 'Silent Package with Argument Switches' }
+    ];
+
+    // Step 5: SSO Application Integration Rows
+    let ssoApps = [
+      { name: 'Hexnode Admin Console', type: 'SAML 2.0 / OIDC', remarks: 'Admin portal SSO via corporate directory credentials' },
+      { name: 'Hexnode User Self-Service Portal', type: 'SAML 2.0', remarks: 'End-user enrollment & device portal login' },
+      { name: 'Salesforce / Jira', type: 'SAML 2.0', remarks: 'Enterprise SaaS app federation' }
+    ];
+
+    // Render Initial State
+    window.onload = function() {
+      renderDeviceTable();
+      renderAppTable();
+      renderPriorityPolicyTable();
+      renderSsoAppTable();
+      setTodayDates();
+      updateProgress();
+    };
+
+    function setTodayDates() {
+      const today = new Date().toISOString().split('T')[0];
+      const endDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      document.getElementById('pocStartDate').value = today;
+      document.getElementById('pocEndDate').value = endDate;
+    }
+
+    function renderDeviceTable() {
+      const tbody = document.getElementById('deviceTableBody');
+      tbody.innerHTML = '';
+      deviceRows.forEach((dev, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">
+            <select onchange="updateDevice(${idx}, 'platform', this.value)" class="bg-slate-50 border border-slate-300 rounded p-1 text-xs font-medium">
+              <option value="Android" ${dev.platform === 'Android' ? 'selected' : ''}>Android</option>
+              <option value="iOS" ${dev.platform === 'iOS' ? 'selected' : ''}>iOS</option>
+              <option value="iPadOS" ${dev.platform === 'iPadOS' ? 'selected' : ''}>iPadOS</option>
+              <option value="macOS" ${dev.platform === 'macOS' ? 'selected' : ''}>macOS</option>
+              <option value="Windows" ${dev.platform === 'Windows' ? 'selected' : ''}>Windows</option>
+              <option value="Linux" ${dev.platform === 'Linux' ? 'selected' : ''}>Linux</option>
+              <option value="Google ChromeBook" ${dev.platform === 'Google ChromeBook' ? 'selected' : ''}>Google ChromeBook</option>
+            </select>
+          </td>
+          <td class="px-3 py-2">
+            <select onchange="updateDevice(${idx}, 'ownership', this.value)" class="bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+              <option value="Corporate" ${dev.ownership === 'Corporate' ? 'selected' : ''}>Corporate (COPE/COD)</option>
+              <option value="BYOD" ${dev.ownership === 'BYOD' ? 'selected' : ''}>BYOD (Personal)</option>
+            </select>
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(dev.model)}" onchange="updateDevice(${idx}, 'model', this.value)" placeholder="Make & Model" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(dev.os)}" onchange="updateDevice(${idx}, 'os', this.value)" placeholder="e.g. 14.1 / Ubuntu 24.04" class="w-28 bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(dev.serial)}" onchange="updateDevice(${idx}, 'serial', this.value)" placeholder="Serial / IMEI" class="w-28 bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-2 py-2 text-center">
+            <button type="button" onclick="removeDeviceRow(${idx})" class="text-rose-500 hover:text-rose-700 p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addDeviceRow() {
+      deviceRows.push({ platform: 'Android', ownership: 'Corporate', model: '', os: '', serial: '' });
+      renderDeviceTable();
+    }
+
+    function removeDeviceRow(index) {
+      if (deviceRows.length <= 1) {
+        showToast('At least one device is required in matrix', 'info');
+        return;
+      }
+      deviceRows.splice(index, 1);
+      renderDeviceTable();
+    }
+
+    function updateDevice(idx, key, value) {
+      deviceRows[idx][key] = value;
+    }
+
+    // ================= TOP 10 PRIORITY POLICIES LOGIC =================
+    function renderPriorityPolicyTable() {
+      const tbody = document.getElementById('priorityPolicyTableBody');
+      const counter = document.getElementById('priorityPolicyCounter');
+      const addBtn = document.getElementById('addPolicyBtn');
+      tbody.innerHTML = '';
+
+      counter.innerText = `${priorityPolicies.length} / 10 Selected`;
+      if (priorityPolicies.length >= 10) {
+        addBtn.disabled = true;
+        addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+
+      priorityPolicies.forEach((pol, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/60 transition';
+        tr.innerHTML = `
+          <td class="px-2 py-2 text-center font-bold text-slate-500 text-xs">
+            ${idx + 1}
+          </td>
+          <td class="px-3 py-2">
+            <select onchange="updatePriorityPolicy(${idx}, 'platform', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs font-medium">
+              <option value="Cross-platform" ${pol.platform === 'Cross-platform' ? 'selected' : ''}>Cross-platform</option>
+              <option value="Android" ${pol.platform === 'Android' ? 'selected' : ''}>Android</option>
+              <option value="iOS / iPadOS" ${pol.platform === 'iOS / iPadOS' ? 'selected' : ''}>iOS / iPadOS</option>
+              <option value="Android / iOS" ${pol.platform === 'Android / iOS' ? 'selected' : ''}>Android / iOS</option>
+              <option value="Windows" ${pol.platform === 'Windows' ? 'selected' : ''}>Windows</option>
+              <option value="macOS" ${pol.platform === 'macOS' ? 'selected' : ''}>macOS</option>
+              <option value="Windows / macOS" ${pol.platform === 'Windows / macOS' ? 'selected' : ''}>Windows / macOS</option>
+              <option value="Linux" ${pol.platform === 'Linux' ? 'selected' : ''}>Linux</option>
+              <option value="Google ChromeBook" ${pol.platform === 'Google ChromeBook' ? 'selected' : ''}>Google ChromeBook</option>
+              <option value="Android (BYOD)" ${pol.platform === 'Android (BYOD)' ? 'selected' : ''}>Android (BYOD)</option>
+            </select>
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(pol.policy)}" onchange="updatePriorityPolicy(${idx}, 'policy', this.value)" placeholder="e.g. BitLocker Drive Encryption" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(pol.criteria)}" onchange="updatePriorityPolicy(${idx}, 'criteria', this.value)" placeholder="Expected result / Pass criteria" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <select onchange="updatePriorityPolicy(${idx}, 'priority', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs font-semibold ${pol.priority === 'Critical' ? 'text-rose-600' : pol.priority === 'High' ? 'text-amber-600' : 'text-blue-600'}">
+              <option value="Critical" ${pol.priority === 'Critical' ? 'selected' : ''}>Critical</option>
+              <option value="High" ${pol.priority === 'High' ? 'selected' : ''}>High</option>
+              <option value="Medium" ${pol.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+            </select>
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(pol.remarks)}" onchange="updatePriorityPolicy(${idx}, 'remarks', this.value)" placeholder="Testing notes / Use case" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-2 py-2 text-center">
+            <button type="button" onclick="removePriorityPolicyRow(${idx})" class="text-rose-500 hover:text-rose-700 p-1 transition" title="Remove policy">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addPriorityPolicyRow() {
+      if (priorityPolicies.length >= 10) {
+        showToast('Maximum of 10 priority qualification policies allowed.', 'warning');
+        return;
+      }
+      priorityPolicies.push({
+        platform: 'Cross-platform',
+        policy: '',
+        criteria: '',
+        priority: 'High',
+        remarks: ''
+      });
+      renderPriorityPolicyTable();
+    }
+
+    function removePriorityPolicyRow(index) {
+      priorityPolicies.splice(index, 1);
+      renderPriorityPolicyTable();
+    }
+
+    function updatePriorityPolicy(index, key, value) {
+      priorityPolicies[index][key] = value;
+      if (key === 'priority') {
+        renderPriorityPolicyTable();
+      }
+    }
+
+    function loadStandardTop10Policies() {
+      priorityPolicies = [
+        { platform: 'Windows / macOS', policy: 'Disk Encryption & Recovery Key Escrow', criteria: 'BitLocker & FileVault enforced silently; keys backed up in Hexnode vault', priority: 'Critical', remarks: 'Compliance requirement' },
+        { platform: 'Android / iOS', policy: 'Single/Multi-App Kiosk Lockdown', criteria: 'Device boots into locked enterprise app with status bar & settings blocked', priority: 'Critical', remarks: 'Store and warehouse floor units' },
+        { platform: 'Cross-platform', policy: 'Corporate Wi-Fi & VPN Profile Push', criteria: 'WPA2/WPA3 enterprise Wi-Fi and Per-App VPN silently provisioned', priority: 'High', remarks: 'Zero manual credential entry by end-users' },
+        { platform: 'macOS', policy: 'Hexnode Access Cloud Login Window', criteria: 'Authenticate at Mac login screen via Entra ID; auto-create local account', priority: 'Critical', remarks: 'Replaces local admin onboarding' },
+        { platform: 'Windows', policy: 'Silent Enterprise Application Deployment', criteria: 'Remote push of .msi / .exe packages with silent command-line flags', priority: 'High', remarks: 'Validate install without reboot' },
+        { platform: 'Android (BYOD)', policy: 'Work Profile & DLP Containerization', criteria: 'Prevent copy/paste between corporate apps and personal WhatsApp/Storage', priority: 'High', remarks: 'Personal device privacy compliance' },
+        { platform: 'Cross-platform', policy: 'Remote Lock & Selective Enterprise Wipe', criteria: 'Device locks instantly; selective wipe removes work data without touching personal photos', priority: 'Critical', remarks: 'Lost/stolen device workflow' },
+        { platform: 'Windows / macOS', policy: 'Automated OS Patching & Deferrals', criteria: 'Quality & feature updates scheduled during maintenance hours only', priority: 'Medium', remarks: 'Prevent mid-day disruptions' },
+        { platform: 'Android / iOS', policy: 'Peripheral & Hardware Restrictions', criteria: 'Disable Camera, USB storage, Developer Options, and Factory Reset', priority: 'Medium', remarks: 'Retail tablet security baseline' },
+        { platform: 'Cross-platform', policy: 'Posture-Based Device Trust SSO', criteria: 'Access to SaaS apps blocked if device encryption or antivirus is disabled', priority: 'High', remarks: 'Zero-trust conditional access' }
+      ];
+      renderPriorityPolicyTable();
+      showToast('Loaded standard Top 10 qualification test policies', 'info');
+    }
+
+    function renderAppTable() {
+      const tbody = document.getElementById('appTableBody');
+      tbody.innerHTML = '';
+      appRows.forEach((app, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.name)}" onchange="updateApp(${idx}, 'name', this.value)" placeholder="Application Name" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.platform)}" onchange="updateApp(${idx}, 'platform', this.value)" placeholder="e.g. Windows / Android" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.source)}" onchange="updateApp(${idx}, 'source', this.value)" placeholder="Store link or In-house installer" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-2 py-2 text-center">
+            <button type="button" onclick="removeAppRow(${idx})" class="text-rose-500 hover:text-rose-700 p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addAppRow() {
+      appRows.push({ name: '', platform: 'Cross-platform', source: 'Store / Enterprise Package' });
+      renderAppTable();
+    }
+
+    function removeAppRow(index) {
+      appRows.splice(index, 1);
+      renderAppTable();
+    }
+
+    function updateApp(idx, key, value) {
+      appRows[idx][key] = value;
+    }
+
+    // ================= STEP 5: SSO APPS & IDP METRICS HANDLERS =================
+    function renderSsoAppTable() {
+      const tbody = document.getElementById('ssoAppTableBody');
+      tbody.innerHTML = '';
+      ssoApps.forEach((app, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.name)}" onchange="updateSsoApp(${idx}, 'name', this.value)" placeholder="e.g. Salesforce / Jira / Custom App" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs font-medium">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.type)}" onchange="updateSsoApp(${idx}, 'type', this.value)" placeholder="SAML 2.0 / OIDC" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-3 py-2">
+            <input type="text" value="${escapeHtml(app.remarks)}" onchange="updateSsoApp(${idx}, 'remarks', this.value)" placeholder="Integration notes / audience" class="w-full bg-slate-50 border border-slate-300 rounded p-1 text-xs">
+          </td>
+          <td class="px-2 py-2 text-center">
+            <button type="button" onclick="removeSsoAppRow(${idx})" class="text-rose-500 hover:text-rose-700 p-1" title="Remove application">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addSsoAppRow() {
+      ssoApps.push({ name: '', type: 'SAML 2.0', remarks: '' });
+      renderSsoAppTable();
+    }
+
+    function removeSsoAppRow(index) {
+      if (ssoApps.length <= 1) {
+        showToast('At least one target SSO application is recommended.', 'info');
+        return;
+      }
+      ssoApps.splice(index, 1);
+      renderSsoAppTable();
+    }
+
+    function updateSsoApp(idx, key, value) {
+      ssoApps[idx][key] = value;
+    }
+
+    function getSelectedRadioValue(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : '';
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/"/g, '&quot;');
+    }
+
+    // Step Navigation
+    function goToStep(step) {
+      if (step < 1 || step > totalSteps) return;
+      currentStep = step;
+      document.querySelectorAll('.form-step').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+
+      // Update stepper tabs
+      for (let i = 1; i <= totalSteps; i++) {
+        const tab = document.getElementById(`stepTab-${i}`);
+        const badge = tab.querySelector('span:first-child');
+        if (i === currentStep) {
+          tab.className = "step-btn py-2 px-1 rounded-lg border transition text-blue-600 border-blue-500 bg-blue-50/70 font-semibold flex flex-col items-center";
+          badge.className = "w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs mb-1";
+        } else if (i < currentStep) {
+          tab.className = "step-btn py-2 px-1 rounded-lg border transition text-emerald-700 border-emerald-300 bg-emerald-50/50 flex flex-col items-center";
+          badge.className = "w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs mb-1";
+          badge.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i>';
+        } else {
+          tab.className = "step-btn py-2 px-1 rounded-lg border transition text-slate-500 border-slate-200 hover:bg-slate-100 flex flex-col items-center";
+          badge.className = "w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs mb-1";
+          badge.innerHTML = `${i}`;
+        }
+      }
+
+      // Prev & Next Buttons
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (currentStep === 1) {
+        prevBtn.classList.add('hidden');
+      } else {
+        prevBtn.classList.remove('hidden');
+      }
+
+      if (currentStep === totalSteps) {
+        nextBtn.innerHTML = '<span>Generate Excel (.xlsx)</span> <i class="fa-solid fa-file-arrow-down"></i>';
+        nextBtn.className = "px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 transition shadow-lg shadow-emerald-600/20";
+        nextBtn.onclick = exportToExcel;
+        populateReview();
+      } else {
+        nextBtn.innerHTML = '<span>Continue</span> <i class="fa-solid fa-arrow-right"></i>';
+        nextBtn.className = "px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 transition shadow-md shadow-blue-500/20";
+        nextBtn.onclick = nextStep;
+      }
+
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextStep() {
+      if (currentStep === 1) {
+        const org = document.getElementById('orgName').value.trim();
+        if (!org) {
+          showToast('Please provide Client Organization Name', 'warning');
+          document.getElementById('orgName').focus();
+          return;
+        }
+      }
+      goToStep(currentStep + 1);
+    }
+
+    function prevStep() {
+      goToStep(currentStep - 1);
+    }
+
+    function updateProgress() {
+      const percentage = (currentStep / totalSteps) * 100;
+      document.getElementById('progressBar').style.width = `${percentage}%`;
+    }
+
+    function populateReview() {
+      const org = document.getElementById('orgName').value || 'Acme Global Corporation';
+      const subdomain = document.getElementById('portalSubdomain').value || 'acmecorp';
+      const suffix = document.getElementById('portalDomainSuffix').value || '.uem.hexnode.com';
+      const cName = document.getElementById('customerSpocName').value || 'David Miller';
+      const cEmail = document.getElementById('customerSpocEmail').value || 'dmiller@acme.com';
+      const partnerComp = document.getElementById('partnerCompany').value || 'Certified Partner';
+      const partnerEng = document.getElementById('partnerEngineerName').value || 'Sarah Jenkins';
+      const partnerEmail = document.getElementById('partnerSeEmail').value || 'sjenkins@partner.com';
+      const start = document.getElementById('pocStartDate').value;
+      const end = document.getElementById('pocEndDate').value;
+
+      document.getElementById('prevOrgName').innerText = org;
+      document.getElementById('prevPortal').innerText = `https://${subdomain}${suffix}`;
+      document.getElementById('prevCustomerSpoc').innerText = `Customer: ${cName} (${cEmail})`;
+      document.getElementById('prevPartnerSpoc').innerText = `Partner: ${partnerComp} | ${partnerEng} (${partnerEmail})`;
+      document.getElementById('prevDates').innerText = `Duration: ${start} to ${end}`;
+      document.getElementById('prevDeviceCount').innerText = `${deviceRows.length} Test Endpoints Scoped`;
+
+      const idpFed = getSelectedRadioValue('idpFederationTarget');
+      const mfaChoice = getSelectedRadioValue('mfaOption');
+      const mfaNotesVal = document.getElementById('mfaNotes').value;
+      const macAccessChecked = document.getElementById('idpScopeMacAccess').checked;
+      const winAccessChecked = document.getElementById('idpScopeWindowsAccess').checked;
+      const idpSub = document.getElementById('idpSubdomain').value || subdomain;
+      const customNotes = document.getElementById('idpCustomNotes').value;
+
+      // Build scope summary lines
+      const summaryDiv = document.getElementById('scopeReviewText');
+      summaryDiv.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <span class="font-bold text-slate-800 block mb-1">Endpoint Management Policies:</span>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-600">
+              ${document.getElementById('scopeKiosk').checked ? '<li>Kiosk Lockdown (Single & Multi-app)</li>' : ''}
+              ${document.getElementById('scopePasscode').checked ? '<li>Passcode & Biometrics Complexity</li>' : ''}
+              ${document.getElementById('scopeWifiVpn').checked ? '<li>Wi-Fi & Per-App VPN Configuration</li>' : ''}
+              ${document.getElementById('scopeRestrictions').checked ? '<li>Hardware Peripheral Restrictions</li>' : ''}
+              ${document.getElementById('scopeEncryption').checked ? '<li>BitLocker & FileVault Recovery Escrow</li>' : ''}
+              ${document.getElementById('scopePatching').checked ? '<li>OS Patch Automation Rings</li>' : ''}
+            </ul>
+          </div>
+          <div>
+            <span class="font-bold text-slate-800 block mb-1">Hexnode IDP Configuration:</span>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-600">
+              <li><strong>Hexnode IDP Domain:</strong> <span class="font-mono text-cyan-700">https://${idpSub}.identity.hexnode.com</span></li>
+              <li><strong>Directory Federation:</strong> ${idpFed}</li>
+              <li><strong>SSO Applications:</strong> ${ssoApps.map(a => a.name).filter(Boolean).join(', ') || 'None specified'}</li>
+              <li><strong>Hexnode Access (macOS):</strong> ${macAccessChecked ? '<span class="text-blue-700 font-semibold">In-Scope (FileVault & Local Account Sync)</span>' : '<span class="text-slate-400">Excluded</span>'}</li>
+              <li><strong>Hexnode Access (Windows):</strong> ${winAccessChecked ? '<span class="text-blue-700 font-semibold">In-Scope (Credential Provider & Cloud Login)</span>' : '<span class="text-slate-400">Excluded</span>'}</li>
+              <li><strong>MFA Scope:</strong> ${mfaChoice} ${mfaNotesVal ? '(' + mfaNotesVal + ')' : ''}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 mt-2">
+          <span class="font-bold text-slate-800 block mb-1.5 flex items-center justify-between">
+            <span>Customer Top Priority Qualification Policies (${priorityPolicies.length}):</span>
+            <span class="text-[11px] text-indigo-600 font-semibold">Saved to Top10_Policies Excel Sheet</span>
+          </span>
+          <div class="space-y-1.5">
+            ${priorityPolicies.map((p, i) => `
+              <div class="flex items-start justify-between text-[11px] bg-slate-50 p-2 rounded border border-slate-200">
+                <div>
+                  <span class="font-bold text-slate-800">${i + 1}. [${p.platform}] ${p.policy || 'Untitled Policy'}</span>
+                  <p class="text-slate-500 text-[10px]">${p.criteria || 'No pass criteria defined'}</p>
+                </div>
+                <span class="font-bold px-2 py-0.5 rounded text-[10px] ${p.priority === 'Critical' ? 'bg-rose-100 text-rose-700' : p.priority === 'High' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">${p.priority}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 mt-2">
+          <span class="font-bold text-slate-800 block mb-1">Customer IDP Requirements / Notes:</span>
+          <p class="text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded border border-slate-200 whitespace-pre-wrap">${customNotes ? escapeHtml(customNotes) : 'None specified'}</p>
+        </div>
+      `;
+    }
+
+    function fillSampleData() {
+      document.getElementById('orgName').value = 'Contoso Financial Technologies';
+      document.getElementById('portalSubdomain').value = 'contosofin';
+      document.getElementById('portalDomainSuffix').value = '.uem.hexnode.com';
+      document.getElementById('customerSpocName').value = 'Alex Rivera';
+      document.getElementById('customerSpocEmail').value = 'arivera@contosofintech.com';
+      document.getElementById('customerSpocPhone').value = '+1 (415) 890-1234';
+      document.getElementById('partnerCompany').value = 'Acuative Networks';
+      document.getElementById('partnerEngineerName').value = 'Elena Rostova';
+      document.getElementById('partnerSeEmail').value = 'erostova@acuative.com';
+      document.getElementById('pocSuccessCriteria').value = '1. Complete out-of-the-box ABM provisioning on 10 Macs with Hexnode Access login.\n2. Enforce BitLocker with automated key storage for 15 remote PCs.\n3. Verify Android Work profile DLP restrictions against corporate data leaking to WhatsApp/personal drive.';
+      
+      document.getElementById('idpSubdomain').value = 'contosofin';
+
+      const entraRadio = document.querySelector('input[name="idpFederationTarget"][value="Microsoft Entra ID"]');
+      if (entraRadio) entraRadio.checked = true;
+
+      const mfaYesRadio = document.querySelector('input[name="mfaOption"][value="YES"]');
+      if (mfaYesRadio) mfaYesRadio.checked = true;
+
+      document.getElementById('idpScopeMacAccess').checked = true;
+      document.getElementById('idpScopeWindowsAccess').checked = true;
+      document.getElementById('mfaNotes').value = 'Mandatory TOTP authenticator challenge on first enrollment & admin access.';
+      document.getElementById('idpCustomNotes').value = '1. User & Group Sync Latency: Sync delta reflected in Hexnode within 5 minutes of directory update.\n2. SSO Authentication Pass Rate: 100% claim validation via Entra ID.\n3. macOS & Windows Hexnode Access: Local user profile auto-provisioned and paired with Entra ID credentials in under 60 seconds.';
+      showToast('Sample POC & SOW Data Loaded', 'info');
+      if (currentStep === 6) populateReview();
+    }
+
+    function resetForm() {
+      document.getElementById('pocForm').reset();
+      deviceRows = [
+        { platform: 'Android', ownership: 'Corporate', model: '', os: '', serial: '' }
+      ];
+      priorityPolicies = [
+        { platform: 'Windows / macOS', policy: '', criteria: '', priority: 'Critical', remarks: '' }
+      ];
+      appRows = [
+        { name: '', platform: 'Android & iOS', source: 'Store / Enterprise Package' }
+      ];
+      ssoApps = [
+        { name: '', type: 'SAML 2.0', remarks: '' }
+      ];
+      document.getElementById('idpSubdomain').value = '';
+      document.getElementById('idpCustomNotes').value = '';
+      renderDeviceTable();
+      renderPriorityPolicyTable();
+      renderAppTable();
+      renderSsoAppTable();
+      setTodayDates();
+      goToStep(1);
+      showToast('Form Reset Successfully', 'info');
+    }
+
+    // ================= MULTI-TAB EXCEL (.XLSX) GENERATION =================
+    function exportToExcel() {
+      try {
+        const wb = XLSX.utils.book_new();
+
+        const org = document.getElementById('orgName').value || 'Hexnode_POC_Client';
+        const sub = document.getElementById('portalSubdomain').value || 'eval';
+        const domainSuffix = document.getElementById('portalDomainSuffix').value || '.uem.hexnode.com';
+        const portal = `https://${sub}${domainSuffix}`;
+        const cSpoc = document.getElementById('customerSpocName').value || 'Unassigned';
+        const cEmail = document.getElementById('customerSpocEmail').value || 'N/A';
+        const cPhone = document.getElementById('customerSpocPhone').value || 'N/A';
+        const partnerName = document.getElementById('partnerCompany').value || 'Direct / N/A';
+        const pEng = document.getElementById('partnerEngineerName').value || 'Hexnode Engineer';
+        const pEmail = document.getElementById('partnerSeEmail').value || 'N/A';
+        const startDate = document.getElementById('pocStartDate').value || 'Immediate';
+        const endDate = document.getElementById('pocEndDate').value || '14 Days';
+        const successCriteria = document.getElementById('pocSuccessCriteria').value || 'Validate standard evaluation scope.';
+
+        // Sheet 1: POC_Summary
+        const summaryData = [
+          ['HEXNODE UEM & IDP - PROOF OF CONCEPT & SCOPE OF WORK SPECIFICATION'],
+          ['Generated via Hexnode Online Scoping System', '', '', 'Export Date: ' + new Date().toLocaleDateString()],
+          [],
+          ['ENGAGEMENT PARAMETERS', 'DETAILS'],
+          ['Customer Organization Name', org],
+        ['Hexnode Portal Instance', portal],
+        ['Customer Technical SPOC', `${cSpoc} (${cEmail}, ${cPhone})`],
+        ['Partner Name', partnerName],
+        ['Engineer Name', pEng],
+        ['Partner SE Email', pEmail],
+        ['Target POC Window', `${startDate} to ${endDate}`],
+        ['High-Level Success Criteria', successCriteria],
+        [],
+        ['EVALUATION SCOPE SUMMARY', 'STATUS'],
+        ['Android Enterprise Work Managed / COPE', 'In-Scope'],
+        ['Apple Business Manager ADE / VPP', document.getElementById('abmStatus').value],
+        ['Windows Autopilot & Cloud Agent', document.getElementById('windowsAutopilot').value],
+        ['Hexnode Access (macOS Cloud Login)', document.getElementById('idpScopeMacAccess').checked ? 'In-Scope' : 'Excluded'],
+        ['Hexnode Access (Windows Cloud Login)', document.getElementById('idpScopeWindowsAccess').checked ? 'In-Scope' : 'Excluded'],
+        ['Hexnode IDP Target Directory', getSelectedRadioValue('idpFederationTarget')],
+        ['Hexnode IDP MFA Requirement', getSelectedRadioValue('mfaOption')],
+        ['Total Test Hardware Endpoints', deviceRows.length],
+        ['Top Priority Qualification Policies', priorityPolicies.length]
+      ];
+      const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+      XLSX.utils.book_append_sheet(wb, wsSummary, 'POC_Summary');
+
+      // Sheet 2: Prerequisites
+        const prereqData = [
+          ['HEXNODE INFRASTRUCTURE & NETWORK PREREQUISITES CHECKLIST'],
+          ['Item', 'Specification', 'Port / Subnet', 'Readiness Status'],
+          ['Cloud Portal Access', '*.hexnode.com endpoints', 'Port 443 TCP & WSS', 'Ready'],
+          ['Apple APNs & ABM', 'Apple Device Communication', 'Port 5223 & 443 (17.0.0.0/8)', document.getElementById('apnsStatus').value],
+          ['Android Enterprise', 'Google Play & APIs', 'Port 443 (*.google.com)', document.getElementById('androidBinding').value],
+          ['Windows WNS Push', 'Microsoft Push Notification Service', 'Port 443/80', 'Default Allow'],
+          ['Active Directory Agent', 'On-prem Hexnode Relay Agent (if hybrid)', 'Port 443 outbound', document.getElementById('idpAD').checked ? 'Required' : 'N/A']
+        ];
+        const wsPrereq = XLSX.utils.aoa_to_sheet(prereqData);
+        XLSX.utils.book_append_sheet(wb, wsPrereq, 'Prerequisites');
+
+        // Sheet 3: Enrollment_Setup
+        const enrollmentData = [
+          ['ENROLLMENT & IDENTITY INTEGRATIONS'],
+          ['Component', 'Selected Deployment Mode', 'Notes'],
+          ['Apple Business Manager (ABM)', document.getElementById('abmStatus').value, 'Automated Device Enrollment (ADE)'],
+          ['APNs Certificate', document.getElementById('apnsStatus').value, 'Annual renewal via corporate Apple ID'],
+          ['Android Enrollment Method', document.getElementById('androidBinding').value, 'QR Code / Zero-Touch / KME'],
+          ['Zero-Touch Available?', document.getElementById('zeroTouchCheck').checked ? 'Yes' : 'No', 'Google Zero-Touch Portal'],
+          ['Samsung KME Available?', document.getElementById('knoxCheck').checked ? 'Yes' : 'No', 'Knox Mobile Enrollment'],
+          ['Windows Autopilot / Entra Join', document.getElementById('windowsAutopilot').value, 'Auto-MDM Enrollment'],
+          ['Identity Providers in Scope', [
+            document.getElementById('idpEntra').checked ? 'Entra ID' : '',
+            document.getElementById('idpGoogle').checked ? 'Google' : '',
+            document.getElementById('idpOkta').checked ? 'Okta' : '',
+            document.getElementById('idpAD').checked ? 'On-Prem AD' : '',
+            document.getElementById('idpHexnodeNative').checked ? 'Hexnode Native' : ''
+          ].filter(Boolean).join(', '), 'Federation & Authentication Source']
+        ];
+        const wsEnrollment = XLSX.utils.aoa_to_sheet(enrollmentData);
+        XLSX.utils.book_append_sheet(wb, wsEnrollment, 'Enrollment_Setup');
+
+        // Sheet 4: Device_Inventory
+        const devHeader = [['TEST DEVICE INVENTORY MATRIX'], ['Platform', 'Ownership', 'Make & Model', 'OS Version', 'Serial / IMEI']];
+        const devBody = deviceRows.map(d => [d.platform, d.ownership, d.model || 'N/A', d.os || 'N/A', d.serial || 'N/A']);
+        const wsDevices = XLSX.utils.aoa_to_sheet([...devHeader, ...devBody]);
+        XLSX.utils.book_append_sheet(wb, wsDevices, 'Device_Inventory');
+
+        // Sheet 5: Top10_Priority_Policies (Dedicated Sheet)
+        const policyHeader = [
+          ['CUSTOMER TOP 10 PRIORITY TEST POLICIES FOR QUALIFICATION'],
+          ['Sl No', 'Target Platform', 'Policy / Feature Description', 'Qualification Criteria / Expected Result', 'Customer Priority', 'Remarks / Test Notes']
+        ];
+        const policyBody = priorityPolicies.map((p, idx) => [
+          idx + 1,
+          p.platform,
+          p.policy || 'N/A',
+          p.criteria || 'N/A',
+          p.priority || 'High',
+          p.remarks || ''
+        ]);
+        const wsPriority = XLSX.utils.aoa_to_sheet([...policyHeader, ...policyBody]);
+        XLSX.utils.book_append_sheet(wb, wsPriority, 'Top10_Policies');
+
+        // Sheet 6: Android_iOS_Scope
+        const mobileScopeData = [
+          ['MOBILE ENDPOINT MANAGEMENT SCOPE (Android, iOS, iPadOS)'],
+          ['Policy / Feature Module', 'In Scope?', 'Validation Test Procedure', 'Success Criteria'],
+          ['Single/Multi-App Kiosk', document.getElementById('scopeKiosk').checked ? 'Yes' : 'No', 'Lock device to target app(s) with peripheral hardware control', 'Device boots and stays inside locked kiosk'],
+          ['Passcode & Biometrics', document.getElementById('scopePasscode').checked ? 'Yes' : 'No', 'Enforce alphanumeric PIN with wipe limits after failed attempts', 'Device forces compliant passcode on next unlock'],
+          ['Wi-Fi & VPN Delivery', document.getElementById('scopeWifiVpn').checked ? 'Yes' : 'No', 'Silently install WPA2/WPA3 enterprise profile and per-app VPN', 'Device automatically associates to corporate SSID'],
+          ['Hardware Restrictions', document.getElementById('scopeRestrictions').checked ? 'Yes' : 'No', 'Disable camera, USB file transfer, screen captures, factory reset', 'Restricted options grayed out or prevented'],
+          ['Remote Lock & Wipe', document.getElementById('scopeRemoteWipe').checked ? 'Yes' : 'No', 'Trigger remote lock, device locate, and remote selective wipe', 'Device acknowledges command instantly over APNs/FCM'],
+          ['App Blacklist / Whitelist', document.getElementById('scopeAppBlock').checked ? 'Yes' : 'No', 'Block social/unauthorized applications', 'Blacklisted apps blocked from launching or hidden'],
+          ['Apple VPP Silent Deployment', document.getElementById('scopeVPP').checked ? 'Yes' : 'No', 'Silently push public app without requiring personal Apple ID', 'App installs silently without iTunes prompt'],
+          ['Remote View / Support', document.getElementById('scopeRemoteView').checked ? 'Yes' : 'No', 'Initiate real-time screen view/control from Hexnode console', 'Admin can see and assist user in real-time']
+        ];
+        const wsMobile = XLSX.utils.aoa_to_sheet(mobileScopeData);
+        XLSX.utils.book_append_sheet(wb, wsMobile, 'Android_iOS_Scope');
+
+        // Sheet 7: Windows_macOS_Scope
+        const desktopScopeData = [
+          ['DESKTOP ENDPOINT MANAGEMENT SCOPE (Windows 10/11 & macOS)'],
+          ['Feature Module', 'In Scope?', 'Technical Details', 'Verification Criteria'],
+          ['Drive Encryption (BitLocker/FileVault)', document.getElementById('scopeEncryption').checked ? 'Yes' : 'No', 'Force drive encryption and back up recovery key to Hexnode', 'Recovery keys viewable securely in Hexnode console'],
+          ['OS Patch Management', document.getElementById('scopePatching').checked ? 'Yes' : 'No', 'Define patch rings, maintenance windows, and feature deferrals', 'OS update scheduled and reports compliance'],
+          ['Custom Scripts (PowerShell/Bash)', document.getElementById('scopeScripts').checked ? 'Yes' : 'No', 'Execute remote scripts under System / Root privileges', 'Script returns exit code 0 and logs output to console'],
+          ['Software Package Deployment', document.getElementById('scopeAppDeploy').checked ? 'Yes' : 'No', 'Silent push of .msi, .exe, .pkg, and .dmg with arguments', 'Software installs silently without end-user elevation']
+        ];
+        desktopScopeData.push([]);
+        desktopScopeData.push(['IN-SCOPE TEST APPLICATIONS CATALOG']);
+        desktopScopeData.push(['Application Name', 'Target Platform', 'Packaging / Distribution Source']);
+        appRows.forEach(a => desktopScopeData.push([a.name, a.platform, a.source]));
+
+        const wsDesktop = XLSX.utils.aoa_to_sheet(desktopScopeData);
+        XLSX.utils.book_append_sheet(wb, wsDesktop, 'Windows_macOS_Scope');
+
+        // Sheet 8: BYOD_Scope
+        const byodData = [
+          ['BYOD CONTAINERIZATION & DATA LOSS PREVENTION (DLP)'],
+          ['Capability', 'Selected?', 'Description', 'Expected Result'],
+          ['Android Enterprise Work Profile', document.getElementById('byodAndroid').checked ? 'Yes' : 'No', 'Containerize corporate apps on personal devices', 'Personal and Work tabs separated in app drawer'],
+          ['Apple User Enrollment', document.getElementById('byodApple').checked ? 'Yes' : 'No', 'APFS volume separation using Managed Apple ID', 'Personal photos/apps untouched; work data managed'],
+          ['Cross-Container DLP', document.getElementById('byodDlp').checked ? 'Yes' : 'No', 'Block copy/paste from work profile to personal apps', 'Paste option disabled when crossing boundary']
+        ];
+        const wsBYOD = XLSX.utils.aoa_to_sheet(byodData);
+        XLSX.utils.book_append_sheet(wb, wsBYOD, 'BYOD_Scope');
+
+        // Sheet 9: Hexnode_IDP_SOW
+        const idpFedTarget = getSelectedRadioValue('idpFederationTarget');
+        const mfaChoice = getSelectedRadioValue('mfaOption');
+        const mfaNotesVal = document.getElementById('mfaNotes').value || 'None specified';
+        const macAccessInScope = document.getElementById('idpScopeMacAccess').checked ? 'In-Scope' : 'Excluded';
+        const winAccessInScope = document.getElementById('idpScopeWindowsAccess').checked ? 'In-Scope' : 'Excluded';
+        const idpSubVal = document.getElementById('idpSubdomain').value || sub;
+        const idpPortalUrl = `https://${idpSubVal}.identity.hexnode.com`;
+        const customNotes = document.getElementById('idpCustomNotes').value || 'None specified';
+
+        const idpData = [
+          ['HEXNODE IDP (IDENTITY & ACCESS) SCOPE OF WORK SPECIFICATION'],
+          ['Customer Pre-POC Requirements & Identity Federation SOW', '', '', 'Export Date: ' + new Date().toLocaleDateString()],
+          [],
+          ['HEXNODE IDP PORTAL CONFIGURATION', 'DETAILS'],
+          ['Hexnode IDP Portal Domain', idpPortalUrl],
+          [],
+          ['1. DIRECTORY FEDERATION & USER SYNCHRONIZATION', 'CONFIGURATION / RESPONSE'],
+          ['Target Directory / Identity Provider', idpFedTarget],
+          [],
+          ['2. SINGLE SIGN-ON (SSO) & DESKTOP CLOUD LOGIN (HEXNODE ACCESS)', 'CONFIGURATION / RESPONSE'],
+          ['Hexnode Access: macOS Cloud Login Window', macAccessInScope],
+          ['  - macOS Local Account & FileVault Passkey Sync', macAccessInScope === 'Excluded' ? 'N/A' : 'Yes - Auto-provision local macOS user and sync FileVault passkey'],
+          ['Hexnode Access: Windows Cloud Login Window', winAccessInScope],
+          ['  - Windows Custom Credential Provider & Offline Sync', winAccessInScope === 'Excluded' ? 'N/A' : 'Yes - Cloud authentication on Windows lock screen & cached credentials'],
+          [],
+          ['CUSTOMER IN-SCOPE SSO APPLICATIONS'],
+          ['Application Name', 'Protocol / Type', 'Integration Notes / Use Case']
+        ];
+
+        ssoApps.forEach(app => {
+          idpData.push([app.name || 'N/A', app.type || 'SAML 2.0', app.remarks || '']);
+        });
+
+        idpData.push([]);
+        idpData.push(['3. MULTI-FACTOR AUTHENTICATION (MFA) POLICY SCOPE', 'CONFIGURATION / RESPONSE']);
+        idpData.push(['MFA Policy Enforcement Requirement (YES/No/Might be)', mfaChoice]);
+        idpData.push(['MFA Scope / Policy Notes', mfaNotesVal]);
+
+        idpData.push([]);
+        idpData.push(['4. CUSTOMER IDP REQUIREMENTS / NOTES', 'SPECIFICATION']);
+        idpData.push(['Requirements & Success Constraints', customNotes]);
+
+        const wsIDP = XLSX.utils.aoa_to_sheet(idpData);
+        XLSX.utils.book_append_sheet(wb, wsIDP, 'Hexnode_IDP_SOW');
+
+        // Clean filename
+        const safeOrg = org.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        const filename = `Hexnode_POC_SOW_${safeOrg}.xlsx`;
+
+        // Write and download
+        XLSX.writeFile(wb, filename);
+        showToast('Multi-tab Excel workbook generated & downloaded!', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast('Error generating Excel file. Check console.', 'error');
+      }
+    }
+
+    // Export Form State to JSON
+    function exportToJSON() {
+      const data = {
+        meta: {
+          generatedAt: new Date().toISOString(),
+          version: '1.5'
+        },
+        organization: {
+          name: document.getElementById('orgName').value,
+          portalSubdomain: document.getElementById('portalSubdomain').value,
+          portalDomainSuffix: document.getElementById('portalDomainSuffix').value,
+          startDate: document.getElementById('pocStartDate').value,
+          endDate: document.getElementById('pocEndDate').value,
+          successCriteria: document.getElementById('pocSuccessCriteria').value
+        },
+        stakeholders: {
+          customerSpoc: {
+            name: document.getElementById('customerSpocName').value,
+            email: document.getElementById('customerSpocEmail').value,
+            phone: document.getElementById('customerSpocPhone').value
+          },
+          partner: {
+            partnerName: document.getElementById('partnerCompany').value,
+            engineerName: document.getElementById('partnerEngineerName').value,
+            partnerSeEmail: document.getElementById('partnerSeEmail').value
+          }
+        },
+        prerequisites: {
+          abmStatus: document.getElementById('abmStatus').value,
+          apnsStatus: document.getElementById('apnsStatus').value,
+          androidBinding: document.getElementById('androidBinding').value,
+          zeroTouch: document.getElementById('zeroTouchCheck').checked,
+          knox: document.getElementById('knoxCheck').checked,
+          windowsAutopilot: document.getElementById('windowsAutopilot').value,
+          idpProviders: {
+            entra: document.getElementById('idpEntra').checked,
+            google: document.getElementById('idpGoogle').checked,
+            okta: document.getElementById('idpOkta').checked,
+            ad: document.getElementById('idpAD').checked,
+            hexnodeNative: document.getElementById('idpHexnodeNative').checked
+          }
+        },
+        testDevices: deviceRows,
+        top10PriorityPolicies: priorityPolicies,
+        inScopeApps: appRows,
+        endpointScope: {
+          kiosk: document.getElementById('scopeKiosk').checked,
+          passcode: document.getElementById('scopePasscode').checked,
+          wifiVpn: document.getElementById('scopeWifiVpn').checked,
+          restrictions: document.getElementById('scopeRestrictions').checked,
+          remoteWipe: document.getElementById('scopeRemoteWipe').checked,
+          appBlock: document.getElementById('scopeAppBlock').checked,
+          vpp: document.getElementById('scopeVPP').checked,
+          remoteView: document.getElementById('scopeRemoteView').checked,
+          encryption: document.getElementById('scopeEncryption').checked,
+          patching: document.getElementById('scopePatching').checked,
+          scripts: document.getElementById('scopeScripts').checked,
+          appDeploy: document.getElementById('scopeAppDeploy').checked,
+          byodAndroid: document.getElementById('byodAndroid').checked,
+          byodApple: document.getElementById('byodApple').checked,
+          byodDlp: document.getElementById('byodDlp').checked
+        },
+        hexnodeIDP: {
+          idpSubdomain: document.getElementById('idpSubdomain').value,
+          idpDomainSuffix: '.identity.hexnode.com',
+          targetDirectory: getSelectedRadioValue('idpFederationTarget'),
+          ssoApps: ssoApps,
+          hexnodeAccess: {
+            macOS: document.getElementById('idpScopeMacAccess').checked,
+            windows: document.getElementById('idpScopeWindowsAccess').checked
+          },
+          mfaScope: getSelectedRadioValue('mfaOption'),
+          mfaNotes: document.getElementById('mfaNotes').value,
+          customerRequirementsNotes: document.getElementById('idpCustomNotes').value
+        }
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Hexnode_POC_Config_${(data.organization.name || 'draft').replace(/\s+/g, '_')}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Configuration exported as JSON', 'info');
+    }
+
+    // UI Toast Notification Helper
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.innerText = message;
+      if (type === 'success') {
+        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+      } else if (type === 'warning') {
+        toastIcon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-base';
+      } else if (type === 'error') {
+        toastIcon.className = 'fa-solid fa-circle-xmark text-rose-400 text-base';
+      } else {
+        toastIcon.className = 'fa-solid fa-circle-info text-cyan-400 text-base';
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
