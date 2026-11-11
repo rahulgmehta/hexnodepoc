@@ -44,9 +44,6 @@
   <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 font-bold text-lg">
-          H
-        </div>
         <div>
           <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">Hexnode UEM & IDP</span>
           <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-950 text-cyan-400 border border-cyan-800/60 hidden sm:inline-block">Pre-POC & SOW Architect</span>
@@ -170,7 +167,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label class="block text-xs text-slate-600 font-medium mb-1">Partner Name</label>
-                <input type="text" id="partnerCompany" placeholder="e.g. Partner IT Solutions" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                <input type="text" id="partnerCompany" placeholder="e.g. Partner IT Solution" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
               </div>
               <div>
                 <label class="block text-xs text-slate-600 font-medium mb-1">Engineer Name</label>
@@ -892,11 +889,8 @@
             <p class="text-sm text-slate-500 mt-1">Review the compiled evaluation parameters and download the standardized multi-tab Excel (.xlsx) workbook.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" onclick="exportToExcel()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition">
+            <button type="button" onclick="exportToExcel()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition">
               <i class="fa-solid fa-file-arrow-down text-sm"></i> Export to Excel (.xlsx)
-            </button>
-            <button type="button" onclick="exportToJSON()" class="px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition">
-              <i class="fa-solid fa-code"></i> JSON
             </button>
           </div>
         </div>
@@ -1758,76 +1752,6 @@
         console.error(err);
         showToast('Error generating Excel file. Check console.', 'error');
       }
-    }
-
-    // Export JSON Backup
-    function exportToJSON() {
-      const data = {
-        meta: { generatedAt: new Date().toISOString(), version: '2.0' },
-        organization: {
-          name: document.getElementById('orgName').value,
-          portalSubdomain: document.getElementById('portalSubdomain').value,
-          portalDomainSuffix: '.uem.hexnode.com',
-          adminEmail: document.getElementById('adminEmail').value,
-          startDate: document.getElementById('pocStartDate').value,
-          endDate: document.getElementById('pocEndDate').value
-        },
-        stakeholders: {
-          customerSpoc: {
-            name: document.getElementById('customerSpocName').value,
-            email: document.getElementById('customerSpocEmail').value,
-            phone: document.getElementById('customerSpocPhone').value
-          },
-          partner: {
-            partnerName: document.getElementById('partnerCompany').value,
-            engineerName: document.getElementById('partnerEngineerName').value,
-            partnerSeEmail: document.getElementById('partnerSeEmail').value
-          }
-        },
-        managementScope: {
-          mobile: document.getElementById('manageMobile').checked,
-          laptops: document.getElementById('manageLaptops').checked,
-          servers: {
-            inScope: document.getElementById('manageServers').checked,
-            moduleTier: getSelectedRadioValue('serverTier') || 'Patch & Manage',
-            targetServerCount: document.getElementById('serverCount').value || '10'
-          },
-          byod: document.getElementById('manageBYOD').checked
-        },
-        top10PriorityPolicies: priorityPolicies,
-        priorityApplications: appRows,
-        readiness: {
-          abm: document.getElementById('abmStatus').value,
-          apns: document.getElementById('apnsStatus').value,
-          androidBinding: document.getElementById('androidBinding').value,
-          zeroTouch: document.getElementById('zeroTouchCheck').checked,
-          knox: document.getElementById('knoxCheck').checked,
-          windowsAutopilot: document.getElementById('windowsAutopilot').value
-        },
-        testDevices: deviceRows,
-        idp: {
-          evaluateIdp: getSelectedRadioValue('evalIdpRadio') === 'yes',
-          portalSubdomain: document.getElementById('idpSubdomain').value,
-          targetDirectory: getSelectedRadioValue('idpFederationTarget'),
-          ssoApps: ssoApps,
-          hexnodeAccess: {
-            macOS: document.getElementById('idpScopeMacAccess').checked,
-            windows: document.getElementById('idpScopeWindowsAccess').checked
-          },
-          mfaScope: getSelectedRadioValue('mfaOption'),
-          mfaNotes: document.getElementById('mfaNotes').value,
-          customerRequirements: document.getElementById('idpCustomNotes').value
-        }
-      };
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `Hexnode_POC_Config_${(data.organization.name || 'draft').replace(/\s+/g, '_')}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast('Configuration exported as JSON', 'info');
     }
 
     // Toast Notification Helper
